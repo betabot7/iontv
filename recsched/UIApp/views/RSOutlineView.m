@@ -71,7 +71,7 @@
 	{
 		if ([self numberOfSelectedRows]>0)
 		{
-			return [[self dataSource] validateUserInterfaceItem:anItem];
+			return [(id <NSUserInterfaceValidations>)[self dataSource] validateUserInterfaceItem:anItem];
 		}
 
 		return NO;
@@ -93,7 +93,7 @@
 	id anItem = [self itemAtRow:row];
 	if (anItem && ([[self delegate] respondsToSelector:@selector(outlineView:shouldShowDisclosureTriangleForItem:)] == YES))
 	{
-		if ([[self delegate] outlineView:self shouldShowDisclosureTriangleForItem:anItem] == YES)
+		if ([(NSObject *)[self delegate] outlineView:self shouldShowDisclosureTriangleForItem:anItem] == YES)
 			return [super frameOfOutlineCellAtRow:row];
 		else
 			return NSZeroRect;

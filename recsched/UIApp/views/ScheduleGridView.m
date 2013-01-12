@@ -65,7 +65,7 @@ const float kScheduleDetailsPopUpTime = 3.0;
 - (NSImage*) cellImageAtLocation:(NSPoint)localPoint withFrame:(NSRect) inFrame  inView:(NSView*)inView;
 - (NSPoint) dragImageLocFor:(NSPoint)localPoint withFrame:(NSRect) inFrame;
 
-@property (retain,getter=station) Z2ITStation    *mStation;
+@property (nonatomic, retain,getter=station) Z2ITStation    *mStation;
 @end
 
 @implementation ScheduleGridView

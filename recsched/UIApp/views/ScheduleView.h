@@ -53,5 +53,5 @@
 - (id) delegate;
 - (void) setDelegate:(id)inDelegate;
 
-@property (setter=setStartTime:) CFAbsoluteTime mStartTime;
+@property (nonatomic, setter=setStartTime:) CFAbsoluteTime mStartTime;
 @end

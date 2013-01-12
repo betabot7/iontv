@@ -43,6 +43,7 @@
 #import "ProgramSearchViewController.h"
 #import "NSStringAdditions.h"
 #import "NSManagedObjectContextAdditions.h"
+#import "recsched_AppDelegate.h"
 
 @interface MainWindowController(Private)
 - (BOOL) addRecordingOfSchedule:(Z2ITSchedule*)schedule error:(NSError**) error;
@@ -450,7 +451,7 @@ NSString *RSSourceListDeleteMessageNameKey = @"deleteMessageName";
 	{
 		if ((aHDHRStation.z2itStation == aStation) && (aHDHRStation.channel.channelStationMap.lineup == aLineup))
 		{
-			[[[NSApplication sharedApplication] delegate] launchVLCAction:sender withParentWindow:[self window] startStreaming:aHDHRStation];
+			[(recsched_AppDelegate *)[[NSApplication sharedApplication] delegate] launchVLCAction:sender withParentWindow:[self window] startStreaming:aHDHRStation];
 			break;
 		}
 	}

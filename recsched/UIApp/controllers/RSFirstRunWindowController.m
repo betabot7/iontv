@@ -67,7 +67,7 @@ const NSInteger kFinishedTabViewIndex = 4;
     
     if (status == noErr)
     {
-              NSString *passwordString = [NSString stringWithCString:passwordData length:passwordLength];
+        NSString *passwordString = [[[NSString alloc] initWithBytes:passwordData length:passwordLength encoding:NSASCIIStringEncoding] autorelease];
       [mSDPasswordField setStringValue:passwordString];
       SecKeychainItemFreeContent(NULL, passwordData);
     }
@@ -180,7 +180,7 @@ const NSInteger kFinishedTabViewIndex = 4;
 - (IBAction) viewHDHRStation:(id)sender
 {
   HDHomeRunStation *selectedStation = [[mHDHRStationsOnLineupController selectedObjects] objectAtIndex:0];
-  [[[NSApplication sharedApplication] delegate] launchVLCAction:sender withParentWindow:[self window] startStreaming:selectedStation];
+  [(recsched_AppDelegate *)[[NSApplication sharedApplication] delegate] launchVLCAction:sender withParentWindow:[self window] startStreaming:selectedStation];
 }
 
 - (IBAction) channelListFinish:(id)sender
@@ -201,7 +201,7 @@ const NSInteger kFinishedTabViewIndex = 4;
   
   // Write the key to the metadata store to show that we're done
   NSError *error = nil;
-  NSMutableDictionary *storeMetadata = [NSMutableDictionary dictionaryWithDictionary:[NSPersistentStoreCoordinator metadataForPersistentStoreWithURL:[[NSApp delegate] urlForPersistentStore] error:&error]];
+    NSMutableDictionary *storeMetadata = [NSMutableDictionary dictionaryWithDictionary:[NSPersistentStoreCoordinator metadataForPersistentStoreOfType:nil URL:[[NSApp delegate] urlForPersistentStore] error:&error]];
   [storeMetadata setValue:[NSNumber numberWithBool:YES] forKey:kFirstRunAssistantCompletedKey];
   [NSPersistentStoreCoordinator setMetadata:storeMetadata forPersistentStoreOfType:nil URL:[[NSApp delegate] urlForPersistentStore] error:&error];
   
