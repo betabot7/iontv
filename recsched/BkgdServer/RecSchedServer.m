@@ -212,8 +212,8 @@ static void SDServerReachabilityChanged(SCNetworkReachabilityRef target, SCNetwo
   CFAbsoluteTime endTime = CFAbsoluteTimeAddGregorianUnits(currentTime, NULL, retrieveRange);
   CFGregorianDate endDate = CFAbsoluteTimeGetGregorianDate(endTime,NULL);
   
-  NSString *startDateStr = [NSString stringWithFormat:@"%d-%d-%dT%d:0:0Z", startDate.year, startDate.month, startDate.day, startDate.hour];
-  NSString *endDateStr = [NSString stringWithFormat:@"%d-%d-%dT%d:0:0Z", endDate.year, endDate.month, endDate.day, endDate.hour];
+  NSString *startDateStr = [NSString stringWithFormat:@"%ld-%d-%dT%d:0:0Z", startDate.year, startDate.month, startDate.day, startDate.hour];
+  NSString *endDateStr = [NSString stringWithFormat:@"%ld-%d-%dT%d:0:0Z", endDate.year, endDate.month, endDate.day, endDate.hour];
   
   xtvdDownloadThread *aDownloadThread = [[xtvdDownloadThread alloc] init];
   NSDictionary *callData = [[NSDictionary alloc] initWithObjectsAndKeys:startDateStr, kTVDataDeliveryStartDateKey, endDateStr, kTVDataDeliveryEndDateKey, self, kTVDataDeliveryDataRecipientKey, self, kTVDataDeliveryReportProgressToKey, nil];
@@ -236,7 +236,7 @@ static void SDServerReachabilityChanged(SCNetworkReachabilityRef target, SCNetwo
 - (void) autoUpdateSchedule
 {
   NSError *error = nil;
-  NSDictionary *storeMetadata = [NSPersistentStoreCoordinator metadataForPersistentStoreWithURL:[[NSApp delegate] urlForPersistentStore] error:&error];
+    NSDictionary *storeMetadata = [NSPersistentStoreCoordinator metadataForPersistentStoreOfType:nil URL:[[NSApp delegate] urlForPersistentStore] error:&error];
   BOOL firstRunAlreadyCompleted = [[storeMetadata valueForKey:kFirstRunAssistantCompletedKey] boolValue];
   if (firstRunAlreadyCompleted == NO)
   {
@@ -281,7 +281,7 @@ static void SDServerReachabilityChanged(SCNetworkReachabilityRef target, SCNetwo
 - (BOOL) fetchFutureSchedule:(id)info
 {
   NSError *error = nil;
-  NSDictionary *storeMetadata = [NSPersistentStoreCoordinator metadataForPersistentStoreWithURL:[[NSApp delegate] urlForPersistentStore] error:&error];
+    NSDictionary *storeMetadata = [NSPersistentStoreCoordinator metadataForPersistentStoreOfType:nil URL:[[NSApp delegate] urlForPersistentStore] error:&error];
   BOOL firstRunAlreadyCompleted = [[storeMetadata valueForKey:kFirstRunAssistantCompletedKey] boolValue];
   
   // If there's a pending timer to issue a fetchFutureSchedule call invalidate it now - we'll start a new one later.
@@ -465,7 +465,7 @@ static void SDServerReachabilityChanged(SCNetworkReachabilityRef target, SCNetwo
 void SDServerReachabilityChanged(SCNetworkReachabilityRef target, SCNetworkConnectionFlags flags, void *info)
 {
   RecSchedServer *server = (RecSchedServer *)info;
-  if (flags && kSCNetworkFlagsReachable == kSCNetworkFlagsReachable)
+  if ((flags & kSCNetworkFlagsReachable))
   {
     // Unschedule/unset the callback so that we don't end up with multiples
     SCNetworkReachabilitySetCallback([server getSDServerReachableRef], SDServerReachabilityChanged, nil);
@@ -723,8 +723,8 @@ void SDServerReachabilityChanged(SCNetworkReachabilityRef target, SCNetworkConne
   CFAbsoluteTime endTime = CFAbsoluteTimeAddGregorianUnits(currentTime, NULL, retrieveRange);
   CFGregorianDate endDate = CFAbsoluteTimeGetGregorianDate(endTime,NULL);
   
-  NSString *startDateStr = [NSString stringWithFormat:@"%d-%d-%dT%d:0:0Z", startDate.year, startDate.month, startDate.day, startDate.hour];
-  NSString *endDateStr = [NSString stringWithFormat:@"%d-%d-%dT%d:0:0Z", endDate.year, endDate.month, endDate.day, endDate.hour];
+  NSString *startDateStr = [NSString stringWithFormat:@"%ld-%d-%dT%d:0:0Z", startDate.year, startDate.month, startDate.day, startDate.hour];
+  NSString *endDateStr = [NSString stringWithFormat:@"%ld-%d-%dT%d:0:0Z", endDate.year, endDate.month, endDate.day, endDate.hour];
   
   NSDictionary *callData = [[NSDictionary alloc] initWithObjectsAndKeys:startDateStr, kTVDataDeliveryStartDateKey, endDateStr, kTVDataDeliveryEndDateKey, [NSNumber numberWithBool:YES], kTVDataDeliveryLineupsOnlyKey,
       self, kTVDataDeliveryDataRecipientKey,
@@ -735,7 +735,7 @@ void SDServerReachabilityChanged(SCNetworkReachabilityRef target, SCNetworkConne
   [callData release];
 }
 
-- (void) scanForHDHomeRunDevices:(id)sender
+- (oneway void) scanForHDHomeRunDevices:(id)sender
 {
 	struct hdhomerun_discover_device_t result_list[64];
 	NSMutableArray *newHDHomeRuns = [NSMutableArray arrayWithCapacity:5];
@@ -753,11 +753,11 @@ void SDServerReachabilityChanged(SCNetworkReachabilityRef target, SCNetworkConne
 		for (i=0; i < count; i++)
 		{
 			// See if an entry already exists
-			HDHomeRun *anHDHomeRun = [HDHomeRun fetchHDHomeRunWithID:[NSNumber numberWithInt:result_list[i].device_id] inManagedObjectContext:[[[NSApplication sharedApplication] delegate] managedObjectContext]];
+			HDHomeRun *anHDHomeRun = [HDHomeRun fetchHDHomeRunWithID:[NSNumber numberWithInt:result_list[i].device_id] inManagedObjectContext:[(RSCommonAppDelegate *)[[NSApplication sharedApplication] delegate] managedObjectContext]];
 			if (!anHDHomeRun)
 			{
 			  // Otherwise we just create a new one
-			  anHDHomeRun = [HDHomeRun createHDHomeRunWithID:[NSNumber numberWithInt:result_list[i].device_id] inManagedObjectContext:[[[NSApplication sharedApplication] delegate] managedObjectContext]];
+			  anHDHomeRun = [HDHomeRun createHDHomeRunWithID:[NSNumber numberWithInt:result_list[i].device_id] inManagedObjectContext:[(RSCommonAppDelegate *)[[NSApplication sharedApplication] delegate] managedObjectContext]];
 			  [newHDHomeRuns addObject:anHDHomeRun];
 			  [anHDHomeRun setName:[NSString stringWithFormat:@"Tuner 0x%x", result_list[i].device_id]];
                           
@@ -896,7 +896,7 @@ void SDServerReachabilityChanged(SCNetworkReachabilityRef target, SCNetworkConne
 	} 
 }
 
-- (void) quitServer:(id)sender
+- (oneway void) quitServer:(id)sender
 {
 	[NSApp  terminate:self];
 //  if ([self applicationShouldTerminate:NSApp ])

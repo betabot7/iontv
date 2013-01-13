@@ -1050,7 +1050,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "codesign -f -s 'iOnTV Code Signing Certificate' -v ${TARGET_BUILD_DIR}/${WRAPPER_NAME}";
+			shellScript = "# codesign -f -s 'iOnTV Code Signing Certificate' -v ${TARGET_BUILD_DIR}/${WRAPPER_NAME}";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1294,8 +1294,6 @@
 		26FC0A850875C7B200E6366F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -1308,12 +1306,10 @@
 				GCC_PREFIX_HEADER = UIApp/recsched_Prefix.pch;
 				HEADER_SEARCH_PATHS = ../libhdhomerun;
 				INFOPLIST_FILE = UIApp/Info.plist;
-				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = iOnTV;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1322,7 +1318,6 @@
 		26FC0A860875C7B200E6366F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -1334,12 +1329,10 @@
 				GCC_PREFIX_HEADER = UIApp/recsched_Prefix.pch;
 				HEADER_SEARCH_PATHS = ../libhdhomerun;
 				INFOPLIST_FILE = UIApp/Info.plist;
-				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = iOnTV;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1348,30 +1341,24 @@
 		26FC0A890875C7B200E6366F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
 		26FC0A8A0875C7B200E6366F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					ppc,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				SDKROOT = macosx;
 			};
 			name = Release;
 		};
 		EA083FC80BAF827B003C27FA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1382,8 +1369,6 @@
 		EA083FC90BAF827B003C27FA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				PRODUCT_NAME = "All recsched";
 				ZERO_LINK = NO;
@@ -1464,9 +1449,7 @@
 		EAEC092F0C272E1600C40D5A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)/iOnTV.app/Contents/Support";
-				COPY_PHASE_STRIP = NO;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/iOnTV.app/Contents/Support/";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1474,11 +1457,9 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = ../HandBrake/libhb;
 				INFOPLIST_FILE = "BkgdServer/recsched_bkgd-Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
-					build/Debug,
 					../HandBrake/libhb,
-					../HandBrake/contrib/lib,
+					"$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -1495,19 +1476,15 @@
 		EAEC09300C272E1600C40D5A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)/iOnTV.app/Contents/Support";
-				COPY_PHASE_STRIP = YES;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/iOnTV.app/Contents/Support/";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = ../HandBrake/libhb;
 				INFOPLIST_FILE = "BkgdServer/recsched_bkgd-Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
-					build/Release,
 					../HandBrake/libhb,
-					../HandBrake/contrib/lib,
+					"$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",

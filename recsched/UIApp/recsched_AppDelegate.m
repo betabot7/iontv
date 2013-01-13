@@ -452,7 +452,7 @@
 	NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
 	NSString *backgroundServerPath = [bundlePath stringByAppendingPathComponent:@"Contents/Support/recsched_bkgd.app/Contents/MacOS/recsched_bkgd"];
         BOOL launchedBackgroundServer = NO;
-//        launchedBackgroundServer = [[NSWorkspace sharedWorkspace] launchApplication:backgroundServerPath];
+        launchedBackgroundServer = [[NSWorkspace sharedWorkspace] launchApplication:backgroundServerPath];
 	if (launchedBackgroundServer == NO)
         {
           NSLog(@"installBackgroundServer - failed to launch background server :%@", backgroundServerPath);

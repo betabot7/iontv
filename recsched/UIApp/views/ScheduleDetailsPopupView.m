@@ -117,7 +117,7 @@ const float kScheduleDetailsPopupHeightPadding = 10.0;
 	else
 		theCloseBoxImage = mCloseBoxImage;
 		
-	[theCloseBoxImage compositeToPoint:[self closeBoxRect].origin operation:NSCompositeSourceOver];
+    [theCloseBoxImage drawAtPoint:[self closeBoxRect].origin fromRect:NSMakeRect(0,0,theCloseBoxImage.size.width,theCloseBoxImage.size.height) operation:NSCompositeSourceOver fraction:1.0];
 }
 
 - (void) mouseDown:(NSEvent*) theEvent
