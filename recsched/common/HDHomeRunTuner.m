@@ -54,10 +54,7 @@ const int kCallSignStringLength = 10;
 
 @implementation HDHomeRunTuner
 
-+ (void)initialize {
-    [self setKeys:[NSArray arrayWithObjects:@"device",@"index", @"lineup", nil]
-      triggerChangeNotificationsForDependentKey:@"longName"];
-}
++ (NSSet *)keyPathsForValuesAffectingLongName { return [NSArray arrayWithObjects:@"device",@"index", @"lineup", nil]; }
 
 + (NSArray *) allTunersInManagedObjectContext:(NSManagedObjectContext*)inMOC
 {
@@ -81,8 +78,6 @@ const int kCallSignStringLength = 10;
   NSString *name = [NSString stringWithFormat:@"%@:%d %@", self.device.name, [[self index] intValue]+1, self.lineup.name];
   return name;
 }
-
-@dynamic device;
 
 
 - (HDHomeRun *)device 
@@ -306,7 +301,7 @@ const int kCallSignStringLength = 10;
 	}
 	else
 	{
-		NSLog(error);
+		NSLog(@"%@",error);
 		[error release];
 	}
 }
@@ -414,7 +409,7 @@ const int kCallSignStringLength = 10;
 
 - (void)threadContextDidSave:(NSNotification *)notification
 {
-    [[[NSApplication sharedApplication] delegate] performSelectorOnMainThread:@selector(updateForSavedContext:) withObject:notification waitUntilDone:YES];
+    [(NSObject *)[[NSApplication sharedApplication] delegate] performSelectorOnMainThread:@selector(updateForSavedContext:) withObject:notification waitUntilDone:YES];
 }
 
 #pragma mark - Thread Functions
@@ -571,7 +566,7 @@ static int cmd_scan_callback(va_list ap, const char *type, const char *str)
 	HDHomeRunTuner *theTuner = va_arg(ap, HDHomeRunTuner *);
         NSManagedObjectContext *theMOC = va_arg(ap, NSManagedObjectContext*);
         
-        return [theTuner scanCallBackForType:[NSString stringWithCString:type] andData:[NSString stringWithCString:str] withMOC:theMOC];
+        return [theTuner scanCallBackForType:[NSString stringWithCString:type encoding:NSASCIIStringEncoding] andData:[NSString stringWithCString:str encoding:NSASCIIStringEncoding] withMOC:theMOC];
 }
 
 // Typically called from a seperate thread to carry out the scanning - the caller must make sure that the instance is
@@ -598,8 +593,8 @@ static int cmd_scan_callback(va_list ap, const char *type, const char *str)
   mCurrentHDHomeRunChannel = nil;
 
   uint32_t channelMap = hdhomerun_device_model_channel_map_all(mHDHomeRunDevice);
-  if (channelMap >= 0) 
-  {
+//  if (channelMap >= 0)    XXX always ?
+//  {
     @try
     {
       @synchronized(self)  
@@ -613,7 +608,7 @@ static int cmd_scan_callback(va_list ap, const char *type, const char *str)
     {
       NSLog(@"Exception during scan = %@, reason: %@", [anException name], [anException reason]); 
     }
-  }
+//  }
 
   if (mCurrentActivityToken)
 	[mCurrentProgressDisplay endActivity:mCurrentActivityToken];
@@ -800,10 +795,9 @@ static int cmd_scan_callback(va_list ap, const char *type, const char *str)
   return anHDHomeRunStation;
 }
 
-+ (void)initialize {
-    [self setKeys:[NSArray arrayWithObjects:@"programNumber", nil]
-      triggerChangeNotificationsForDependentKey:@"channelAndProgramNumber"];
-}
+
+// ...AffectingChannelAndProgramNumber  ???
++ (NSSet *)keyPathsForValuesAffectingChannel { return [NSArray arrayWithObjects:@"programNumber", nil]; }
 
 - (void) awakeFromFetch
 {

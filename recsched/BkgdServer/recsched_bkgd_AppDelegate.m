@@ -97,12 +97,10 @@ NSString *kRecSchedServerBundleID = @"org.awkward.recsched-server";
   if (self != nil) 
   {
 	// Now register the server
-    NSConnection *theConnection;
-
-    theConnection = [NSConnection defaultConnection];
+    _myConnection = [NSConnection new];
     mRecSchedServer = [[RecSchedServer alloc] init];
-    [theConnection setRootObject:mRecSchedServer];
-    if ([theConnection registerName:kRecServerConnectionName] == NO) 
+    [_myConnection setRootObject:mRecSchedServer];
+    if ([_myConnection registerName:kRecServerConnectionName] == NO)
     {
             /* Handle error. */
             NSLog(@"Error registering connection");
@@ -112,6 +110,12 @@ NSString *kRecSchedServerBundleID = @"org.awkward.recsched-server";
 	[self setupPreferences];
   }
   return self;
+}
+
+- (void) dealloc
+{
+    [_myConnection release];
+    [super dealloc];
 }
 
 - (NSURL *)urlForPersistentStore {
@@ -149,7 +153,7 @@ NSString *kRecSchedServerBundleID = @"org.awkward.recsched-server";
       mMigrationActivityToken = [[[self recServer] uiActivity] setActivity:mMigrationActivityToken progressDoubleValue:[object migrationProgress]];
     }
     else
-      NSLog(@"Progress is %.2f%", [object migrationProgress] * 100.0);
+      NSLog(@"Progress is %.2f%%", [object migrationProgress] * 100.0);
   }
   
   if ([keyPath compare:@"currentEntityMapping"] == NSOrderedSame)

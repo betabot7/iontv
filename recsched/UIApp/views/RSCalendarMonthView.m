@@ -225,7 +225,7 @@
 
     NSAttributedString *monthString = [[[NSAttributedString alloc] initWithString:[mCalendarController.displayStartDate descriptionWithCalendarFormat:@"%B %Y"] attributes:attrsDictionary] autorelease];
     [mMonthHeaderString release];
-    mMonthHeaderString = [monthString retain];
+    mMonthHeaderString = monthString.mutableCopy;
 
     [self setNeedsDisplay:YES];
 }

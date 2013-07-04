@@ -702,6 +702,8 @@ int compareXMLNodeByProgramAttribute(id thisXMLProgramNode, id otherXMLProgramNo
   
   NSDictionary *xtvdParserData = (NSDictionary*)parseInfo;
   
+  NSError *error = nil;
+
   NSPersistentStoreCoordinator *psc = [xtvdParserData valueForKey:kPersistentStoreCoordinatorKey];
   if (psc != nil)
   {
@@ -734,7 +736,6 @@ int compareXMLNodeByProgramAttribute(id thisXMLProgramNode, id otherXMLProgramNo
 	
     [mManagedObjectContext processPendingChanges];
     
-    NSError *error = nil;
     NSLog(@"performParse - saving");
     if (![mManagedObjectContext save:&error])
     {
@@ -746,7 +747,7 @@ int compareXMLNodeByProgramAttribute(id thisXMLProgramNode, id otherXMLProgramNo
   [mManagedObjectContext reset];
   [[NSNotificationCenter defaultCenter] removeObserver:self name:NSManagedObjectContextDidSaveNotification object:mManagedObjectContext];
   
-  [[NSFileManager defaultManager] removeFileAtPath:[xtvdParserData valueForKey:@"xmlFilePath"] handler:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:[NSURL URLWithString:[xtvdParserData valueForKey:@"xmlFilePath"]] error:&error];
   
   // Only certain standard types of data can be passed through a distributed notification - so we build a new userInfo dictionary containing just the 
   // important valid details.
@@ -778,7 +779,7 @@ int compareXMLNodeByProgramAttribute(id thisXMLProgramNode, id otherXMLProgramNo
 - (void)threadContextDidSave:(NSNotification *)notification
 {
 	if ([[[NSApplication sharedApplication] delegate] respondsToSelector:@selector(updateForSavedContext:)])
-		[[[NSApplication sharedApplication] delegate] performSelectorOnMainThread:@selector(updateForSavedContext:) withObject:notification waitUntilDone:YES];
+		[(NSObject *)[[NSApplication sharedApplication] delegate] performSelectorOnMainThread:@selector(updateForSavedContext:) withObject:notification waitUntilDone:YES];
 }
 
 @end;
@@ -891,7 +892,7 @@ int compareXMLNodeByProgramAttribute(id thisXMLProgramNode, id otherXMLProgramNo
 - (void)threadContextDidSave:(NSNotification *)notification
 {
 	if ([[[NSApplication sharedApplication] delegate] respondsToSelector:@selector(updateForSavedContext:)])
-		[[[NSApplication sharedApplication] delegate] performSelectorOnMainThread:@selector(updateForSavedContext:) withObject:notification waitUntilDone:YES];
+		[(NSObject *)[[NSApplication sharedApplication] delegate] performSelectorOnMainThread:@selector(updateForSavedContext:) withObject:notification waitUntilDone:YES];
 }
 
 @end;

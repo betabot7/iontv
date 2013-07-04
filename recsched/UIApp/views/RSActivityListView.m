@@ -58,7 +58,7 @@
 	int colorIndex = 0;
 	while (rowRect.origin.y < [self bounds].size.height)
 	{
-		[[colorArray objectAtIndex:colorIndex] set];
+		[(NSColor *)[colorArray objectAtIndex:colorIndex] set];
 		[NSBezierPath fillRect:rowRect];
 		
 		rowRect.origin.y += rowRect.size.height;

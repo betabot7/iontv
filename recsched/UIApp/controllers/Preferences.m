@@ -195,7 +195,7 @@ static Preferences *sSharedInstance = nil;
 
 - (NSManagedObjectContext *)managedObjectContext
 {
-	return [[[NSApplication sharedApplication] delegate] managedObjectContext];
+	return [(RSCommonAppDelegate *)[[NSApplication sharedApplication] delegate] managedObjectContext];
 }
 
 - (BOOL) aboutToLeavePrefsView:(NSView*)inView toShow:(NSView*)inViewToBeShown
@@ -363,7 +363,7 @@ static Preferences *sSharedInstance = nil;
       
       if (status == noErr)
       {
-		NSString *passwordString = [NSString stringWithCString:passwordData length:passwordLength];
+          NSString *passwordString = [[[NSString alloc] initWithBytes:passwordData length:passwordLength encoding:NSASCIIStringEncoding] autorelease];
         [mSDPasswordField setStringValue:passwordString];
         SecKeychainItemFreeContent(NULL, passwordData);
       }
@@ -627,7 +627,7 @@ static Preferences *sSharedInstance = nil;
 {
   HDHomeRunStation *selectedStation = [[mVisibleStationsArrayController selectedObjects] objectAtIndex:0];
   NSLog(@"viewHDHRStation selection = %@", [selectedStation callSign]);
-  [[[NSApplication sharedApplication] delegate] launchVLCAction:sender withParentWindow:mPanel startStreaming:selectedStation];
+  [(recsched_AppDelegate *)[[NSApplication sharedApplication] delegate] launchVLCAction:sender withParentWindow:mPanel startStreaming:selectedStation];
 }
 
 - (IBAction) exportHDHomeRunChannelMap:(id)sender
@@ -637,8 +637,11 @@ static Preferences *sSharedInstance = nil;
 
 	NSSavePanel *aSavePanel = [NSSavePanel savePanel];
 	[aSavePanel setAccessoryView:mExportChannelTunerSelectionView];
-	[aSavePanel setRequiredFileType:@"xml"];
-	[aSavePanel beginSheetForDirectory:docPath file:nil modalForWindow:mPanel modalDelegate:self didEndSelector:@selector(exportChannelPanelDidEnd: returnCode: contextInfo:)  contextInfo:nil];
+    [aSavePanel setDirectoryURL:[NSURL URLWithString:docPath]];
+	[aSavePanel setAllowedFileTypes:[NSArray arrayWithObject:@"xml"]];
+    [aSavePanel beginSheetModalForWindow:mPanel completionHandler:^(NSInteger result) {
+        [self exportChannelPanelDidEnd:aSavePanel returnCode:result contextInfo:nil];
+    }];
 }
 
 - (IBAction) importHDHomeRunChannelMap:(id)sender
@@ -648,7 +651,11 @@ static Preferences *sSharedInstance = nil;
 
 	NSOpenPanel *anOpenPanel = [NSOpenPanel openPanel];
 	[anOpenPanel setAccessoryView:mExportChannelTunerSelectionView];
-	[anOpenPanel beginSheetForDirectory:docPath file:nil types:[NSArray arrayWithObject:@"xml"] modalForWindow:mPanel modalDelegate:self didEndSelector:@selector(importChannelPanelDidEnd: returnCode: contextInfo:) contextInfo:nil];
+    [anOpenPanel setDirectoryURL:[NSURL URLWithString:docPath]];
+	[anOpenPanel setAllowedFileTypes:[NSArray arrayWithObject:@"xml"]];
+    [anOpenPanel beginSheetModalForWindow:mPanel completionHandler:^(NSInteger result) {
+        [self importChannelPanelDidEnd:anOpenPanel returnCode:result contextInfo:nil];
+    }];
 } 
 
 - (void) colorClickAction: (id) sender {	// sender is the table view
@@ -685,10 +692,10 @@ static Preferences *sSharedInstance = nil;
 	[panel setTitle:@"Choose an output location"];
 	[panel setPrompt:@"Choose"];
 	
-	[panel beginSheetForDirectory:[startingDirectory path] file:nil types:nil modalForWindow:mPanel
-		   modalDelegate:self
-		   didEndSelector:@selector(setPathPanelDidEnd:returnCode:contextInfo:)
-		   contextInfo:sender];
+    [panel setDirectoryURL:[NSURL URLWithString:[startingDirectory path]]];
+    [panel beginSheetModalForWindow:mPanel completionHandler:^(NSInteger result) {
+        [self setPathPanelDidEnd:panel returnCode:result contextInfo:sender];
+    }];
 }
 
 - (IBAction) upgradeFirmware:(id)sender
