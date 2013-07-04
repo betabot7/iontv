@@ -292,7 +292,8 @@ int sortStationsWithLineup(id thisStation, id otherStation, void *context)
 {
   float currOffset = [mStationsScroller floatValue];
   float knobProportion = (float)[mStationColumnView numberStationsDisplayed] / (float)([mSortedStationsArray count] - [mStationColumnView numberStationsDisplayed]);
-  [mStationsScroller setFloatValue:currOffset knobProportion:knobProportion];
+    [mStationsScroller setFloatValue:currOffset];
+    [mStationsScroller setKnobProportion:knobProportion];
 }
 
 - (void) sortStationsArray

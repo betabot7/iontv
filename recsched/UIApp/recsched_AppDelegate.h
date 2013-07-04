@@ -56,5 +56,5 @@
 
 - (RSActivityWindowController*) activityWindowController;
 
-@property (retain,getter=recServer) id mRecServer;
+@property (nonatomic,retain,getter=recServer) id mRecServer;
 @end

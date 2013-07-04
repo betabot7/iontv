@@ -279,9 +279,10 @@ NSString *RSNotificationTranscodingFinished = @"RSNotificationTranscodingFinishe
 	theTrack.objectDescription = aTranscoding.schedule.program.descriptionStr;
 }
 
-- (void)eventDidFail:(const AppleEvent *)event withError:(NSError *)error
+- (id)eventDidFail:(const AppleEvent *)event withError:(NSError *)error
 {
 	NSLog(@"ScriptingBridge eventDidFail error = %@", error);
+    return nil;
 }
 
 - (void) transcodingFinishedNotification:(NSNotification*)aNotification

@@ -27,6 +27,8 @@
     
   BOOL mMigrationInProgress;
   size_t mMigrationActivityToken;
+    
+    NSConnection *_myConnection;
 }
 
 - (NSURL *)urlForPersistentStore;

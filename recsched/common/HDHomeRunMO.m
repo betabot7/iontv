@@ -85,7 +85,7 @@ const int kLatestFirmwareVersion = 20080427;
 
   if (!array)
   {
-	NSLog(@"createHDHomeRunWithID %d - no lineups !");
+	NSLog(@"createHDHomeRunWithID %d - no lineups !",inDeviceID.integerValue);
 	return nil;
   }
 

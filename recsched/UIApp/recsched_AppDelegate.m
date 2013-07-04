@@ -179,7 +179,7 @@
     fileManager = [NSFileManager defaultManager];
     applicationSupportFolder = [self applicationSupportFolder];
     if ( ![fileManager fileExistsAtPath:applicationSupportFolder isDirectory:NULL] ) {
-        [fileManager createDirectoryAtPath:applicationSupportFolder attributes:nil];
+        [fileManager createDirectoryAtPath:applicationSupportFolder withIntermediateDirectories:YES attributes:nil error:&error];
     }
     
     url = [self urlForPersistentStore]; //[NSURL fileURLWithPath: [applicationSupportFolder stringByAppendingPathComponent: @"recsched_bkgd.dat"]];
@@ -206,7 +206,7 @@
         
         // Launch the first run assistant if the key is not present in the store metadata
         NSError *error = nil;
-        NSDictionary *storeMetadata = [NSPersistentStoreCoordinator metadataForPersistentStoreWithURL:[[NSApp delegate] urlForPersistentStore] error:&error];
+        NSDictionary *storeMetadata = [NSPersistentStoreCoordinator                                       metadataForPersistentStoreOfType:nil URL:[[NSApp delegate] urlForPersistentStore] error:&error];
         BOOL firstRunAlreadyCompleted = [[storeMetadata valueForKey:kFirstRunAssistantCompletedKey] boolValue];
         if (firstRunAlreadyCompleted == NO)
         {
@@ -231,7 +231,7 @@
   {
     NSString *vlcPath = [[NSUserDefaults standardUserDefaults] stringForKey:@"VLCAppPath"];
     if (!vlcPath)
-      vlcPath = [NSString stringWithString:@"/Applications/VLC.app/Contents/MacOS/VLC"];
+      vlcPath = @"/Applications/VLC.app/Contents/MacOS/VLC";
     mVLCTask = [[NSTask launchedTaskWithLaunchPath:vlcPath arguments:[NSArray arrayWithObjects:[NSString stringWithFormat:@"udp://@:%d", kDefaultPortNumber], nil]] retain];
     if (mVLCTask)
     {
@@ -255,14 +255,13 @@
       
       if ([appPaths count] > 0)
       {
-        [[NSOpenPanel openPanel]  // Get the shared open panel
-          beginSheetForDirectory:[appPaths objectAtIndex:0]  // Point it at the apps directory
-          file:nil
-          types:[NSArray arrayWithObjects:@"app", nil]
-          modalForWindow:inParentWindow  // This makes it show up as a sheet, attached to window
-          modalDelegate:self    // Tell me when you're done.
-          didEndSelector:@selector(findVLCPanelDidEnd:returnCode:contextInfo:)  // Call this method when you're done..
-          contextInfo:sender];  
+          NSOpenPanel *panel = [NSOpenPanel openPanel]; // Get the shared open panel
+          [panel setDirectoryURL:[NSURL URLWithString:[appPaths objectAtIndex:0]]]; // Point it at the apps directory
+          [panel setAllowedFileTypes:[NSArray arrayWithObjects:@"app", nil]];
+          // This makes it show up as a sheet, attached to window
+          [panel beginSheetModalForWindow:inParentWindow completionHandler:^(NSInteger result) {
+              [self findVLCPanelDidEnd:panel returnCode:result contextInfo:sender]; // Call this method when you're done.
+          }];
       }
     }
   }
@@ -272,7 +271,7 @@
 {
   if (returnCode == NSOKButton)
   {
-    NSString *vlcPath = [NSString stringWithFormat:@"%@/Contents/MacOS/VLC", [panel filename]];
+    NSString *vlcPath = [NSString stringWithFormat:@"%@/Contents/MacOS/VLC", [[panel URL] absoluteString]];
     mVLCTask = [[NSTask launchedTaskWithLaunchPath:vlcPath arguments:[NSArray arrayWithObjects:@"udp://@:1234", nil]] retain];
     if (mVLCTask)
     {
@@ -453,7 +452,7 @@
 	NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
 	NSString *backgroundServerPath = [bundlePath stringByAppendingPathComponent:@"Contents/Support/recsched_bkgd.app/Contents/MacOS/recsched_bkgd"];
         BOOL launchedBackgroundServer = NO;
-//        launchedBackgroundServer = [[NSWorkspace sharedWorkspace] launchApplication:backgroundServerPath];
+        launchedBackgroundServer = [[NSWorkspace sharedWorkspace] launchApplication:backgroundServerPath];
 	if (launchedBackgroundServer == NO)
         {
           NSLog(@"installBackgroundServer - failed to launch background server :%@", backgroundServerPath);

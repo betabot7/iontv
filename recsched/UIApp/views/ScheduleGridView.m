@@ -65,7 +65,7 @@ const float kScheduleDetailsPopUpTime = 3.0;
 - (NSImage*) cellImageAtLocation:(NSPoint)localPoint withFrame:(NSRect) inFrame  inView:(NSView*)inView;
 - (NSPoint) dragImageLocFor:(NSPoint)localPoint withFrame:(NSRect) inFrame;
 
-@property (retain,getter=station) Z2ITStation    *mStation;
+@property (nonatomic, retain,getter=station) Z2ITStation    *mStation;
 @end
 
 @implementation ScheduleGridView
@@ -225,7 +225,7 @@ const float kScheduleDetailsPopUpTime = 3.0;
 		// Take the returned image and composite it into a new one with some transparency
 		scheduleCellImage = [[NSImage alloc] initWithSize:[anImage size]];
 		[scheduleCellImage lockFocus];
-		[anImage compositeToPoint:NSMakePoint(0, 0) operation:NSCompositeSourceOver fraction:0.5];
+        [anImage drawAtPoint:NSMakePoint(0, 0) fromRect:NSMakeRect(0, 0, anImage.size.width, anImage.size.height) operation:NSCompositeSourceOver fraction:0.5];
 		[scheduleCellImage unlockFocus];
 	}
 	

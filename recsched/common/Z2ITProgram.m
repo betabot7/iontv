@@ -586,7 +586,7 @@ BOOL boolValueForAttribute(NSXMLElement *inXMLElement, NSString *inAttributeName
 	NSArray *array = [inMOC executeFetchRequest:request error:&error];
 	if (array == nil)
 	{
-		NSLog(@"Error executing fetch request to find genreClass %@ error = %@", inGenreClassNameString, *error);
+		NSLog(@"Error executing fetch request to find genreClass %@ error = %@", inGenreClassNameString, error);
 		return nil;
 	}
 	NSManagedObject *aGenreClass = nil;
